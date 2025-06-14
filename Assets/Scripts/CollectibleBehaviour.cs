@@ -9,10 +9,10 @@ public class CollectibleBehaviour : MonoBehaviour
 
     Material originalMap;
 
-    public void collect(PlayerBehaviour player)
-    {
-        Destroy(gameObject);
-    }
+    //public void collect(PlayerBehaviour player)
+    //{
+    //    Destroy(gameObject);
+    //} ???????
 
     void Start()
     {
