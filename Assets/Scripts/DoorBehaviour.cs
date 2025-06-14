@@ -2,21 +2,29 @@ using UnityEngine;
 
 public class DoorBehaviour : MonoBehaviour
 {
-   public void Interact()
+    public bool doorOpen = false; // Track the state of the door
+
+    public bool keyRequired = false; // Flag to check if a key is required to open the door
+
+    public int pointsRequired = 0; // Points required to open the door
+
+    public int collectiblesNeeded = 0; // Number of collectibles needed to open the door
+
+    public void Interact()
     {
-        if (PlayerBehaviour.doorOpen == false)
+        if (doorOpen == false)
         {
             Vector3 doorRotation = transform.eulerAngles;
             doorRotation.y += 90f; // Rotate the door by 90 degrees on the Y-axis
             transform.eulerAngles = doorRotation;
-            PlayerBehaviour.doorOpen = true; // Set the door state to open
+            doorOpen = true; // Set the door state to open
         }
         else
         {
             Vector3 doorRotation = transform.eulerAngles;
             doorRotation.y -= 90f; // Rotate the door back by 90 degrees on the Y-axis
             transform.eulerAngles = doorRotation;
-            PlayerBehaviour.doorOpen = false; // Set the door state to closed
+            doorOpen = false; // Set the door state to closed
         }
     }
 }

@@ -17,7 +17,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     HazardBehaviour currentHazard = null;
 
-    public static bool doorOpen = false;
+    CollectibleBehaviour currentCollectible = null;
 
     [SerializeField]
     Transform spawnPoint;
@@ -32,6 +32,9 @@ public class PlayerBehaviour : MonoBehaviour
     TextMeshProUGUI healthText;
 
     [SerializeField]
+    TextMeshProUGUI infoText;
+
+    [SerializeField]
     Transform respawnPoint;
 
     [SerializeField]
@@ -42,6 +45,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField]
     Rigidbody rb;
+
+    bool keyObtained = false; // Flag to check if the key has been obtained
+
+    int collectiblesObtained = 0; // Track the number of collectibles obtained
 
     void Start()
     {
@@ -67,6 +74,30 @@ public class PlayerBehaviour : MonoBehaviour
                 currentCoin = hitInfo.collider.gameObject.GetComponent<CoinBehaviour>(); //get the CoinBehaviour component from the detected object
                 currentCoin.Highlight(); //highlight the coin to signify it can be collected
             }
+            else if (hitInfo.collider.CompareTag("Door"))
+            {
+
+                canInteract = true; //if the ray hits a door, set canInteract to true
+                currentDoor = hitInfo.collider.GetComponent<DoorBehaviour>();
+            }
+            else if (hitInfo.collider.GetComponent<CollectibleBehaviour>() != null) //check if the hit object has a collectibleBehaviour component
+            {
+                canInteract = true; //if the ray hits a collectible, set canInteract to true
+                currentCollectible = hitInfo.collider.GetComponent<CollectibleBehaviour>();
+                currentCollectible.Highlight(); //highlight the collectible to signify it can be collected
+            }
+        }
+        else if (currentCoin != null)
+        {
+            // If the raycast did not hit a collectible, unhighlight the current coin
+            currentCoin.Unhighlight();
+            currentCoin = null; //reset the current coin
+        }
+        else if (currentCollectible != null)
+        {
+            // If the raycast did not hit a collectible, unhighlight the current collectible
+            currentCollectible.Unhighlight();
+            currentCollectible = null; //reset the current collectible
         }
     }
 
@@ -113,6 +144,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void OnInteract()
     {
+        Debug.Log("Interacting with object");
         // Handle interaction logic here
         if (canInteract)
         {
@@ -125,29 +157,50 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else if (currentDoor != null)
             {
-                Debug.Log("Interacting with door");
-                currentDoor.Interact();
+                if (currentDoor.keyRequired && keyObtained == false)
+                {
+                    infoText.text = "Key required to open this door.";
+                }
+                else if (currentDoor.collectiblesNeeded > collectiblesObtained)
+                {
+                    infoText.text = "Collectibles needed to open this door: " + (currentDoor.collectiblesNeeded - collectiblesObtained);
+                }
+                else if (currentDoor.pointsRequired > score)
+                {
+                    infoText.text = "Points required to open this door: " + (currentDoor.pointsRequired - score);
+                }
+                else
+                {
+                    infoText.text = "...";
+                    currentDoor.Interact();
+                }
+            }
+            else if (currentCollectible != null)
+            {
+                if (currentCollectible.CompareTag("Key"))
+                {
+                    keyObtained = true;
+                    collectiblesObtained++; // Increment collectibles obtained
+                    Destroy(currentCollectible.gameObject); // Destroy the key collectible
+                    canInteract = false; //No longer can interact with the key
+                    currentCollectible = null;
+                }
             }
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("Player is looking at " + other.gameObject.name);
-        if (other.CompareTag("Door"))
-        {
-            canInteract = true;
-            currentDoor = other.gameObject.GetComponent<DoorBehaviour>();
-        }
-    }
-    
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Door"))
+        if (currentDoor != null && currentDoor.doorOpen == true)
         {
             currentDoor.Interact();
             canInteract = false;
             currentDoor = null;
+        }
+        else if (currentDoor != null)
+        {
+            infoText.text = ""; //removes text 
+            currentDoor = null; //reset the current door
         }
     }
 
