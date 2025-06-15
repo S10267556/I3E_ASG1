@@ -29,6 +29,10 @@ public class PBox : MonoBehaviour
     [SerializeField]
     AudioClip BoxAudioClip; // Audio clip for playing sounds
 
+    /// <summary>
+    /// When the box is hit by a bullet, it plays a sound, destroys itself,
+    /// and spawns enemies and a health potion if specified.
+    /// </summary>
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))

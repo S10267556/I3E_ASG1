@@ -20,11 +20,17 @@ public class DoorBehaviour : MonoBehaviour
 
     public bool finalDoor = false; // Flag to check if this is the final door in the game
 
+    /// <summary>
+    ///  Sets up the door by getting the AudioSource component attached to it.
+    /// </summary>
     void Start()
     {
         doorAudioSource = GetComponent<AudioSource>(); // Get the AudioSource component attached to the door
     }
 
+    /// <summary>
+    ///   Interacts with the door, toggling its open/close state and playing the sound.
+    /// </summary>
     public void Interact()
     {
         if (doorOpen == false)

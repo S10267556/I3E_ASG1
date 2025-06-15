@@ -33,17 +33,29 @@ public class HazardBehaviour : MonoBehaviour
 
     public AudioSource hazardAudioSource; // Audio source for playing sounds
 
+    /// <summary>
+    ///  Initializes the hazard by getting the AudioSource component.
+    /// </summary>
     void Start()
     {
         hazardAudioSource = GetComponent<AudioSource>(); // Get the AudioSource component attached to the hazard
     }
 
+    /// <summary>
+    /// Inflicts damage on the player when they come into contact with the hazard.
+    /// </summary>
     public void injure(PlayerBehaviour player)
     {
         player.ModifyHealth(damage);
         hazardAudioSource.Play(); // Play the hazard sound when the player is injured
     }
 
+    /// <summary>
+    /// Handles how the hazard would interact with getting hit by a bullet.
+    /// If the hazard is an enemy, it decreases its health.
+    ///  If the health reaches zero, it drops loot (coins and special loot) at its position.
+    /// If the hazard is not an enemy, it does nothing.
+    /// </summary>
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Bullet") && gameObject.CompareTag("Enemy"))

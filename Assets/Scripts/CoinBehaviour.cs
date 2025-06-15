@@ -22,6 +22,9 @@ public class CoinBehaviour : MonoBehaviour
     [SerializeField]
     AudioClip coinAudioClip; // Audio clip for playing sounds
 
+    /// <summary>
+    /// Collects the coin and adds its value to the player's score, as well as plays a sound effect.
+    /// </summary>
     public void collect(PlayerBehaviour player)
     {
         player.ModifyScore(value);
@@ -29,6 +32,9 @@ public class CoinBehaviour : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Stores the MeshRenderer component and original color of the coin when the script is first initialized.
+    /// </summary>
     void Start()
     {
         //Get the MeshRenderer component attached to this GameObject
@@ -39,12 +45,18 @@ public class CoinBehaviour : MonoBehaviour
         originalMap = myMeshRenderer.material;
     }
 
+    /// <summary>
+    ///  Highlights the coin by changing its color to the highlight color.
+    /// </summary>
     public void Highlight()
     {
         //change the color of the coin to the highlight color
         myMeshRenderer.material = highlightMap;
     }
 
+    /// <summary>
+    ///    Unhighlights the coin by changing its color back to the original color.
+    /// </summary>
     public void Unhighlight()
     {
         //change the color of the coin back to the original color

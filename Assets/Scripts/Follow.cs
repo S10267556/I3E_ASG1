@@ -14,11 +14,17 @@ public class Follow : MonoBehaviour
     public float speed;
     // Update is called once per frame
 
+    /// <summary>
+    ///  Initializes the Player GameObject by finding it in the scene using its tag.
+    /// </summary>
     void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
     }
 
+    /// <summary>
+    ///  Updates the position of the ChaserEnemy to move towards the Player's position at a specified speed.
+    /// </summary>
     void Update()
     {
         ChaserEnemy.transform.position = Vector3.MoveTowards(ChaserEnemy.transform.position, Player.transform.position, speed);

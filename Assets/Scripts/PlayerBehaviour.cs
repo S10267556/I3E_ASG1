@@ -79,7 +79,9 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     float fireStrength = 0f; // How strong the projectile will be fired/the force applied to the projectile
 
-
+    /// <summary>
+    /// Spawns the player in, displaying both health and score on the screen, while hiding the ending ui.
+    /// </summary>
     void Start()
     {
         scoreText.text = "Score: " + score.ToString();
@@ -88,6 +90,16 @@ public class PlayerBehaviour : MonoBehaviour
         FinalScene.gameObject.SetActive(false); // Hide the final scene initially
     }
 
+    /// <summary>
+    /// Sends a raycast out from a spawnpoint infront of the player to detect interactable objects.
+    ///  It checks for coins, doors, collectibles, hazards, and displays relevant information.
+    /// If the raycast hits a coin, it highlights the coin and allows interaction.
+    ///  If it hits a door, it allows interaction with the door.
+    /// If it hits a collectible, it highlights the collectible and allows interaction.
+    /// If it hits an enemy, it displays the enemy's health.
+    /// If it hits a Pandora's Box, it displays a message indicating that it can be opened with a strong force, signaling that "F" is to be pressed.
+    ///  If the raycast does not hit any interactable objects, it clears the highlighted objects and info text.
+    /// </summary>
     void Update()
     {
         RaycastHit hitInfo;
@@ -161,6 +173,12 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// When the player collides with objects, it checks if the object is a coin, hazard, or enemy.
+    ///  If it is a coin, it collects the coin and updates the score.
+    /// If it is a hazard, it injures the player and plays the hazard sound.
+    ///  If it is an enemy, it injures the player and plays the hazard sound, displaying a message about the injury.
+    /// </summary>
     void OnCollisionEnter(Collision collision)
     {
         //Debug.Log("Player collided with: " + collision.gameObject.name);
@@ -185,6 +203,14 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Modifies the player's health by the amount specified.
+    ///  If the health exceeds the maximum health, it is capped at the maximum.
+    /// If the health drops to zero or below, it stops player movement, returning the player's position to the respawn point, before allowing the player to continue moving.
+    ///  If the player respawns, their health is reset to the maximum health.
+    /// </summary>
+
+
     public void ModifyHealth(int amount)
     {
         playerHealth += amount;
@@ -206,12 +232,24 @@ public class PlayerBehaviour : MonoBehaviour
         healthText.text = "Health: " + playerHealth.ToString() + "/" + playerMaxHealth.ToString();
     }
 
+    /// <summary>
+    /// Modifies the player's score by the amount specified.
+    /// It updates the score text to reflect the new score.
+    /// </summary>
+    
     public void ModifyScore(int amount)
     {
         score += amount;
         scoreText.text = "Score: " + score.ToString();
     }
 
+    /// <summary>
+    ///  Handles player interaction with objects when the interact button is pressed.
+    /// It checks if the player can interact with a coin, door, or collectible.
+    ///  If the player interacts with a coin, it collects the coin and updates the score, as well as displays a message.
+    /// If the player interacts with a door, it checks if a key is required, if enough collectibles or points are available, and then opens the door or displays an appropriate message.
+    ///  If the player interacts with a collectible, it checks the type of collectible (key, gun, heal, or gold) and applies the corresponding effects, such as obtaining a key, gun, healing the player, or adding points to the score.
+    /// </summary>
     void OnInteract()
     {
         Debug.Log("Interacting with object");
@@ -281,6 +319,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///  Checks if all collectibles have been obtained.
+    /// If the player has obtained the required number of collectibles, it displays a congratulations message.
+    /// </summary>
     void AllCollectiblesObtained()
     {
         if (collectiblesObtained >= 5) // Assuming 5 is the total number of collectibles needed
@@ -290,6 +332,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Game ending scene.
+    ///  It activates the final scene, displays the final score and collectibles obtained, as well as hides the player character.
+    /// </summary>
     public void Final()
     {
         FinalScene.gameObject.SetActive(true); // Activate the final scene
@@ -298,6 +344,10 @@ public class PlayerBehaviour : MonoBehaviour
         playerCharacter.SetActive(false); // Hide the player character
     }
 
+    /// <summary>
+    /// Used to close the door when the player exits the trigger collider of the door.
+    /// If the door is open, it closes the door and sets canInteract to false.
+    /// </summary>
     void OnTriggerExit(Collider other)
     {
         if (currentDoor != null && currentDoor.doorOpen == true)
@@ -313,6 +363,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///  Fires a projectile from the spawn point if the player has obtained a gun.
+    /// If the gun is not obtained, it displays a message as a hint that the player should look for a gun.
+    /// </summary>
     void OnFire()
     {
         if (gunObtained == true)
