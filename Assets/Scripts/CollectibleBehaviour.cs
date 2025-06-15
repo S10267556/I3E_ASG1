@@ -1,13 +1,19 @@
 using UnityEngine;
 
+/*
+* Author: Wong Zhi Lin
+* Date: 15 June 2025
+* Description: This script controls the highlights of collectible items in the game, which are special items like health, guns, and keys.
+*/
+
 public class CollectibleBehaviour : MonoBehaviour
 {
     MeshRenderer myMeshRenderer;
 
     [SerializeField]
-    Material highlightMap;
+    Material highlightMap; // Sets the highlight color for the collectible
 
-    Material originalMap;
+    Material originalMap; // Stores the original color of the collectible
 
     void Start()
     {

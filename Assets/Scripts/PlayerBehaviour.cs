@@ -3,62 +3,69 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
+/*
+* Author: Wong Zhi Lin
+* Date: 15 June 2025
+* Description: This script handles the player's behavior, which is largely interaction with the game world.
+* It allows the player to collect coins, interact with doors, obtain collectibles, and manage health and score.
+*/
+
 public class PlayerBehaviour : MonoBehaviour
 {
-    int score = 0;
-    int playerHealth = 100;
-    int playerMaxHealth = 100;
+    int score = 0; //keeps the player's score
+    int playerHealth = 100; //keeps the player's health
+    int playerMaxHealth = 100; //keeps the player's max health
 
-    bool canInteract = false;
+    bool canInteract = false; //Tracks whether the item can be interacted with
 
-    CoinBehaviour currentCoin = null;
+    CoinBehaviour currentCoin = null; //holds the coin that the player is currently interacting with
 
-    DoorBehaviour currentDoor = null;
+    DoorBehaviour currentDoor = null; //holds the door that the player is currently interacting with
 
-    HazardBehaviour currentHazard = null;
+    HazardBehaviour currentHazard = null; //holds the hazard that the player is currently interacting with
 
-    CollectibleBehaviour currentCollectible = null;
-
-    [SerializeField]
-    Transform spawnPoint;
+    CollectibleBehaviour currentCollectible = null; //holds the collectible that the player is currently interacting with
 
     [SerializeField]
-    float interactionDistance = 5f;
+    Transform spawnPoint; //Allows user to set the spawn point for raycasting
 
     [SerializeField]
-    TextMeshProUGUI scoreText;
+    float interactionDistance = 5f; //the distance at which the player can interact with objects/which the raycast can reach
 
     [SerializeField]
-    TextMeshProUGUI healthText;
-
-    public TextMeshProUGUI infoText;
+    TextMeshProUGUI scoreText; // Text to display the player's score
 
     [SerializeField]
-    TextMeshProUGUI congratsText;
+    TextMeshProUGUI healthText; // Text to display the player's health
+
+    public TextMeshProUGUI infoText; // Text to display information about the current interaction
 
     [SerializeField]
-    Image congratsBg;
+    TextMeshProUGUI congratsText; // Text to display the congratulations message once all collectibles are obtained
 
     [SerializeField]
-    GameObject FinalScene;
+    Image congratsBg; // Background colour for the congratulations message
 
     [SerializeField]
-    TextMeshProUGUI finalScoreText;
+    GameObject FinalScene; // The final scene that appears when the player completes the game
 
     [SerializeField]
-    TextMeshProUGUI finalCollectiblesText;
+    TextMeshProUGUI finalScoreText; // Text to display the final score
 
     [SerializeField]
-    Transform respawnPoint;
+    TextMeshProUGUI finalCollectiblesText; // Text to display the final collectibles count
 
     [SerializeField]
-    GameObject playerCharacter;
+    Transform respawnPoint; // The point where the player will respawn
 
     [SerializeField]
-    CharacterController characterController;
+    GameObject playerCharacter; // The player character GameObject
 
     [SerializeField]
-    Rigidbody rb;
+    CharacterController characterController; // To set the player's character controller
+
+    [SerializeField]
+    Rigidbody rb; // To set the player's rigidbody
 
     bool keyObtained = false; // Flag to check if the key has been obtained
 
@@ -67,10 +74,10 @@ public class PlayerBehaviour : MonoBehaviour
     int collectiblesObtained = 0; // Track the number of collectibles obtained
 
     [SerializeField]
-    GameObject projectile;
+    GameObject projectile; // Allows player to set the projectile to be fired
 
     [SerializeField]
-    float fireStrength = 0f;
+    float fireStrength = 0f; // How strong the projectile will be fired/the force applied to the projectile
 
 
     void Start()
@@ -166,6 +173,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             currentHazard = collision.gameObject.GetComponent<HazardBehaviour>();
             currentHazard.injure(this);
+            currentHazard.hazardAudioSource.Play(); // Play the hazard sound
             if (collision.gameObject.CompareTag("Hazard"))
             {
                 infoText.text = "Do your eyes grow on the back of your head? Watch it.";
@@ -212,7 +220,6 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (currentCoin != null)
             {
-                Debug.Log("Interacting with coin");
                 infoText.text = "That's not going to save you. Keep moving.";
                 currentCoin.collect(this);
                 currentCoin = null;
@@ -232,7 +239,7 @@ public class PlayerBehaviour : MonoBehaviour
                 {
                     infoText.text = "Pathetic. -  " + (currentDoor.pointsRequired - score) + "/" + currentDoor.pointsRequired + " Points";
                 }
-                else if (currentDoor.collectiblesNeeded == collectiblesObtained)
+                else if (currentDoor.finalDoor == true)
                 {
                     infoText.text = "You feel a sense of dread as you open the door.";
                     Final();

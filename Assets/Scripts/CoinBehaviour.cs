@@ -1,21 +1,31 @@
 using UnityEngine;
 
+/*
+* Author: Wong Zhi Lin
+* Date: 15 June 2025
+* Description: This script controls the behavior of collectible coins in the game. As well as allows the player to change its highlights.
+*/
+
 public class CoinBehaviour : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     MeshRenderer myMeshRenderer;
 
     [SerializeField]
-    Material highlightMap;
+    Material highlightMap; // Sets the highlight color for the coin
 
-    Material originalMap;
+    Material originalMap; // Stores the original color of the coin
 
     [SerializeField]
-    int value = 0;
+    int value = 0; // The value of the coin, which is added to the player's score when collected
+
+    [SerializeField]
+    AudioClip coinAudioClip; // Audio clip for playing sounds
 
     public void collect(PlayerBehaviour player)
     {
         player.ModifyScore(value);
+        AudioSource.PlayClipAtPoint(coinAudioClip, transform.position); // Play the coin collection sound
         Destroy(gameObject);
     }
 
