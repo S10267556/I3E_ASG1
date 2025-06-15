@@ -12,6 +12,9 @@ TagManager:
   - Key
   - Gun
   - Gold
+  - Bullet
+  - Enemy
+  - PandorasBox
   layers:
   - Default
   - TransparentFX

@@ -9,11 +9,6 @@ public class CollectibleBehaviour : MonoBehaviour
 
     Material originalMap;
 
-    //public void collect(PlayerBehaviour player)
-    //{
-    //    Destroy(gameObject);
-    //} ???????
-
     void Start()
     {
         //Get the MeshRenderer component attached to this GameObject

@@ -31,8 +31,22 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI healthText;
 
+    public TextMeshProUGUI infoText;
+
     [SerializeField]
-    TextMeshProUGUI infoText;
+    TextMeshProUGUI congratsText;
+
+    [SerializeField]
+    Image congratsBg;
+
+    [SerializeField]
+    GameObject FinalScene;
+
+    [SerializeField]
+    TextMeshProUGUI finalScoreText;
+
+    [SerializeField]
+    TextMeshProUGUI finalCollectiblesText;
 
     [SerializeField]
     Transform respawnPoint;
@@ -63,6 +77,8 @@ public class PlayerBehaviour : MonoBehaviour
     {
         scoreText.text = "Score: " + score.ToString();
         healthText.text = "Health: " + playerHealth.ToString() + "/" + playerMaxHealth.ToString(); //displays health against max health
+        congratsBg.gameObject.SetActive(false); // Hide the congrats background initially
+        FinalScene.gameObject.SetActive(false); // Hide the final scene initially
     }
 
     void Update()
@@ -91,9 +107,26 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else if (hitInfo.collider.GetComponent<CollectibleBehaviour>() != null) //check if the hit object has a collectibleBehaviour component
             {
+                if (currentCollectible != null)
+                {
+                    // If we already have a collectible highlighted, unhighlight it
+                    currentCollectible.Unhighlight();
+                }
                 canInteract = true; //if the ray hits a collectible, set canInteract to true
                 currentCollectible = hitInfo.collider.GetComponent<CollectibleBehaviour>();
                 currentCollectible.Highlight(); //highlight the collectible to signify it can be collected
+            }
+            else if (hitInfo.collider.CompareTag("Enemy"))
+            {
+                HazardBehaviour hazard = hitInfo.collider.GetComponent<HazardBehaviour>();
+                if (hazard != null && hazard.EnemyHealth > 0)
+                {
+                    infoText.text = "Health: " + hazard.EnemyHealth;
+                }
+            }
+            else if (hitInfo.collider.CompareTag("PandorasBox"))
+            {
+                infoText.text = "You reckon that a strong 'F'orce could open this.";
             }
         }
         else if (currentCoin != null)
@@ -110,6 +143,15 @@ public class PlayerBehaviour : MonoBehaviour
             canInteract = false; //set canInteract to false
             currentCollectible = null; //reset the current collectible
         }
+        else if (currentHazard != null)
+        {
+            currentHazard = null;
+            infoText.text = ""; // Clear the info text if no hazard is detected
+        }
+        else if (hitInfo.collider.CompareTag("PandorasBox") == false)
+        {
+            infoText.text = ""; // Clear the info text if no interactable object is detected
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -120,10 +162,18 @@ public class PlayerBehaviour : MonoBehaviour
             currentCoin = collision.gameObject.GetComponent<CoinBehaviour>();
             currentCoin.collect(this);
         }
-        else if (collision.gameObject.CompareTag("Hazard"))
+        else if (collision.gameObject.GetComponent<HazardBehaviour>() != null)
         {
             currentHazard = collision.gameObject.GetComponent<HazardBehaviour>();
             currentHazard.injure(this);
+            if (collision.gameObject.CompareTag("Hazard"))
+            {
+                infoText.text = "Do your eyes grow on the back of your head? Watch it.";
+            }
+            else if (collision.gameObject.CompareTag("Enemy"))
+            {
+                infoText.text = "A stabbing pain, a throbbing ache. You look down and see nothing, but something is off about you.";
+            }
         }
     }
 
@@ -136,13 +186,13 @@ public class PlayerBehaviour : MonoBehaviour
         }
         else if (playerHealth <= 0)
         {
+            infoText.text = "Watch your surroundings.";
             characterController.enabled = false;
             rb.isKinematic = true; // Disable physics interactions
             transform.position = respawnPoint.position;
             playerHealth = playerMaxHealth; // Reset health to max on respawn
             rb.isKinematic = false; //re-enable physics interactions
             characterController.enabled = true; //re-enable character controller
-            infoText.text = "Watch your surroundings.";
 
         }
         healthText.text = "Health: " + playerHealth.ToString() + "/" + playerMaxHealth.ToString();
@@ -182,6 +232,11 @@ public class PlayerBehaviour : MonoBehaviour
                 {
                     infoText.text = "Pathetic. -  " + (currentDoor.pointsRequired - score) + "/" + currentDoor.pointsRequired + " Points";
                 }
+                else if (currentDoor.collectiblesNeeded == collectiblesObtained)
+                {
+                    infoText.text = "You feel a sense of dread as you open the door.";
+                    Final();
+                }
                 else
                 {
                     infoText.text = "...";
@@ -207,15 +262,33 @@ public class PlayerBehaviour : MonoBehaviour
                 }
                 else if (currentCollectible.CompareTag("Gold"))
                 {
-                    score += 10000; // Add 10,000 points to the score
+                    ModifyScore(10000); // Add 10,000 points to the score
                     infoText.text = "Look away. Look away. Look away. Look away. Look away.";
                 }
                 collectiblesObtained++; // Increment collectibles obtained
                 Destroy(currentCollectible.gameObject); // Destroy the collectible
                 canInteract = false; //No longer can interact with the collectible
                 currentCollectible = null;
+                AllCollectiblesObtained(); // Check if all collectibles have been obtained
             }
         }
+    }
+
+    void AllCollectiblesObtained()
+    {
+        if (collectiblesObtained >= 5) // Assuming 5 is the total number of collectibles needed
+        {
+            congratsText.text = "You found all of the special items. Keep your guard up.";
+            congratsBg.gameObject.SetActive(true); // Show the background
+        }
+    }
+
+    public void Final()
+    {
+        FinalScene.gameObject.SetActive(true); // Activate the final scene
+        finalScoreText.text = "Points earned: " + score.ToString();
+        finalCollectiblesText.text = "Special items collected: " + collectiblesObtained.ToString() + " / 5";
+        playerCharacter.SetActive(false); // Hide the player character
     }
 
     void OnTriggerExit(Collider other)
