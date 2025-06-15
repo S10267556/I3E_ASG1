@@ -5681,7 +5681,7 @@ MonoBehaviour:
   EnemyLootSpecial: {fileID: 4279400068169213891, guid: ffa76e0c9e2cfec47bc6eb620f335a68, type: 3}
   EnemyPosition: {fileID: 1697375729679309507}
   AppearCoins: 2
-  isSpecial: 1
+  isSpecial: 0
   hazardAudioSource: {fileID: 0}
 --- !u!65 &1941703320506430876
 BoxCollider:

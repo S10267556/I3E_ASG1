@@ -59,18 +59,18 @@ public class HazardBehaviour : MonoBehaviour
                     for (int i = 0; i < AppearCoins; i++)
                     {
                         Instantiate(EnemyLootCoin, EnemyPosition.position, EnemyPosition.rotation);
-                        EnemyPosition.position += new Vector3(0.5f, 0, 0); // Adjust position for next coin
+                        EnemyPosition.position += new Vector3(0.8f, 0, 0); // Adjust position for next coin
                     }
                 }
 
                 if (isSpecial == true)
                 {
                     Instantiate(EnemyLootSpecial, EnemyPosition.position, EnemyPosition.rotation);
-                    EnemyPosition.position += new Vector3(0.5f, 0, 0);
+                    EnemyPosition.position += new Vector3(0.8f, 0, 0);
                     for (int i = 0; i < AppearCoins; i++)
                     {
                         Instantiate(EnemyLootCoin, EnemyPosition.position, EnemyPosition.rotation);
-                        EnemyPosition.position += new Vector3(0.5f, 0, 0); // Adjust position for next coin
+                        EnemyPosition.position += new Vector3(0.8f, 0, 0); // Adjust position for next coin
                     }
                 }
 

@@ -233,7 +233,7 @@ public class PlayerBehaviour : MonoBehaviour
                 }
                 else if (currentDoor.collectiblesNeeded > collectiblesObtained)
                 {
-                    infoText.text = "Turn back. You can't leave empty handed. - " + (currentDoor.collectiblesNeeded - collectiblesObtained) + "/" + currentDoor.collectiblesNeeded + " Secrets";
+                    infoText.text = "Turn back. You can't leave empty handed. - " + collectiblesObtained + "/" + currentDoor.collectiblesNeeded + " Secrets";
                 }
                 else if (currentDoor.pointsRequired > score)
                 {

@@ -122,5 +122,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightMap: {fileID: 2100000, guid: 5b198ce9b79db214384015dd94c76810, type: 2}
-  value: 100
+  value: 10
   coinAudioClip: {fileID: 8300000, guid: f757d30aab011a144b52bb974d20af1c, type: 3}
